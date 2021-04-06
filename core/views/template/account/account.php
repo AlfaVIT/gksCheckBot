@@ -1,0 +1,1 @@
+<a class="btn btn-danger" href="account?action=logout">Выход</a>

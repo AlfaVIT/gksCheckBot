@@ -1,0 +1,12 @@
+.loginform-password {
+	position: relative;
+}
+
+.loginform-password-input {
+	padding-right: 3rem;
+}
+
+.loginform-password-showbtn {
+	position: absolute;
+	right: 0;
+}

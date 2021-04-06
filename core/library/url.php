@@ -9,6 +9,43 @@
 	 * @package library
 	 */
 	class url {
+
+		/**
+		 * prepareSegments
+		 * 
+		 * Эта функция определяет имя контроллера и метода
+		 * на основании строки запроса
+		 * 
+		 * @return array;
+		 */
+		protected static function prepareSegments() {
+			$declaredControllers = glob('core/views/layout/*.php');
+			$declaredControllers = is_array($declaredControllers) ? $declaredControllers : [];
+			foreach ( $declaredControllers as $key=>$val ) {
+				$declaredControllers[$key] = substr($val,18,-4);
+			}
+			
+			$segments = ($_GET['url']);
+			$segments = strtolower(preg_replace('/[^a-zA-Z\/]/m', '', $segments));
+			$segments = explode('/', $segments);
+			if ( empty($segments[count($segments)-1]) ) {
+				unset($segments[count($segments)-1]);
+			}
+
+			// если передано не более одного элемента
+			if ( is_null($segments[1]) ) {
+				// если первый элемент является задекларированным
+				if ( in_array($segments[0], $declaredControllers) ) {
+					$segments[1] = 'Index';
+				} else {
+					$segments[1] = ( is_null($segments[0]) ) ? 'Index' : $segments[0];
+					$segments[0] = 'Public';
+				}
+			}
+
+			return $segments;
+		}
+
 		/**
 		 * Статический метод getSegments
 		 * 
@@ -18,10 +55,7 @@
 		 * @return array
 		 */
 		public static function getSegments() {
-			$segments = explode('/', $_GET['url']);
-			if ( empty($segments[count($segments)-1]) ) {
-				unset($segments[count($segments)-1]);
-			}
+			$segments = self::prepareSegments();
 			return $segments;
 		}
 
@@ -50,7 +84,7 @@
 		 */
 		public static function getParam($paramName) {
 			return urlencode($_GET[$paramName]);
-		}
+}
 
 		/**
 		 * Статический метод getUrlString
